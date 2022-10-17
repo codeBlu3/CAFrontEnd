@@ -24,7 +24,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SignUpScreen } from "./auth/signUpScreen";
 import { SignInScreen } from "./auth/signInScreen";
 
-
 // data laayer
 import {
   ApolloClient,
@@ -35,12 +34,10 @@ import {
 } from "@apollo/client";
 import { client } from "./graphql/config";
 
-
-
 const AuthStack = createNativeStackNavigator();
 
 export default function App() {
-  //put change theme on settigns screen
+  //Themes
   const [isThemeDark, setIsThemeDark] = React.useState(false);
   let theme = isThemeDark ? CombinedDarkTheme : CombinedDefaultTheme;
 
@@ -57,6 +54,8 @@ export default function App() {
   );
 
   // Auth
+  const [currentAuthenticatedUser, setCurrentAuthenticatedUser] =
+    React.useState("");
   const [state, dispatch] = React.useReducer(
     lTokenTransform,
     initialTokenState
@@ -70,8 +69,10 @@ export default function App() {
       signOut: () => {
         dispatch({ type: "SIGN_OUT" });
       },
+      setCurrentAuthenticatedUser,
+      currentAuthenticatedUser,
     }),
-    []
+    [setCurrentAuthenticatedUser, currentAuthenticatedUser]
   );
 
   return (
@@ -79,31 +80,33 @@ export default function App() {
       <PreferencesContext.Provider value={preferences}>
         <PaperProvider theme={theme}>
           <NavigationContainer theme={theme} linking={LinkingConfig}>
-            <AuthStack.Navigator>
-              {state.isSignout == false ? (
-                <AuthStack.Group>
-                  <AuthStack.Screen
-                    name="SignIn"
-                    component={SignInScreen}
-                    options={{
-                      title: "Sign In",
-                    }}
-                  />
+            <ApolloProvider client={client}>
+              <AuthStack.Navigator>
+                {state.isSignout == true ? (
+                  <AuthStack.Group>
+                    <AuthStack.Screen
+                      name="SignIn"
+                      component={SignInScreen}
+                      options={{
+                        title: "Sign In",
+                      }}
+                    />
 
-                  <AuthStack.Screen
-                    name="SignUp"
-                    component={SignUpScreen}
-                    options={{
-                      title: "Sign Up",
-                    }}
-                  />
-                </AuthStack.Group>
-              ) : (
-                <AuthStack.Group screenOptions={{ headerShown: false }}>
-                  <AuthStack.Screen name="Main" component={MainDraw} />
-                </AuthStack.Group>
-              )}
-            </AuthStack.Navigator>
+                    <AuthStack.Screen
+                      name="SignUp"
+                      component={SignUpScreen}
+                      options={{
+                        title: "Sign Up",
+                      }}
+                    />
+                  </AuthStack.Group>
+                ) : (
+                  <AuthStack.Group screenOptions={{ headerShown: false }}>
+                    <AuthStack.Screen name="MainDraw" component={MainDraw} />
+                  </AuthStack.Group>
+                )}
+              </AuthStack.Navigator>
+            </ApolloProvider>
           </NavigationContainer>
         </PaperProvider>
       </PreferencesContext.Provider>

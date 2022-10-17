@@ -6,6 +6,7 @@ import {
   Appbar,
   TouchableRipple,
   Switch,
+  Badge,
   Text,
 } from "react-native-paper";
 import { Drawer as Drawernp } from "react-native-paper";
@@ -23,65 +24,90 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AuthContext } from "../auth/AuthContext";
 
 //screens
-import {UploadScreen} from "../modules/upload/UploadScreen"
-
-
-
+import { UploadScreen } from "../modules/upload/UploadScreen";
+import { JobStack } from "../modules/job/JobStack";
+import { DedupeStack } from "../modules/deduplication/DedupeStack"; //screen lang dapat to  dalawa
+import { CrossMatchingStack } from "../modules/crossmatching/CrossMatchingStack"; //screen lang dapat
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
+function rightSwitch() {
+  const { isThemeDark } = React.useContext(PreferencesContext);
+  return <Switch color={"red"} value={isThemeDark} />;
+}
+
 function CustomDrawerContent(props: any) {
-  //const { signOut } = React.useContext(AuthContext);
-  //<DrawerItem label="Log Out" onPress={() => signOut()} />
+  //pakilipat nga to
   const theme = useTheme();
   const { toggleTheme, isThemeDark } = React.useContext(PreferencesContext);
 
+  const [active, setActive] = React.useState("");
+
   const { signOut }: any = React.useContext(AuthContext);
-  //<DrawerItem label="Help" onPress={() => alert("Link to help")} />
 
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
-      <View>
-        <Text variant="titleLarge">Change theme</Text>
-        <Switch
-          style={[{ backgroundColor: theme.colors.accent }]}
-          color={"red"}
-          value={isThemeDark}
-          onValueChange={() => toggleTheme()}
+      <Drawernp.Section>
+        <Drawernp.Item
+          label="First Item"
+          active={active === "first"}
+          onPress={() => setActive("first")}
         />
-      </View>
-      <DrawerItem label="Log Out" onPress={() => signOut()} />
+        <Drawernp.Item
+          label="Second Item"
+          active={active === "second"}
+          onPress={() => setActive("second")}
+        />
+        <Drawernp.Item
+          label="Toggle Theme"
+          onPress={() => toggleTheme()}
+          right={rightSwitch}
+        />
+        <Drawernp.Item label="Log Out" onPress={() => signOut()} />
+      </Drawernp.Section>
     </DrawerContentScrollView>
   );
 }
 
+function CustomNavigationBar({ navigation }) {
+  //pakilipat nga to
+  //console.log(props) try kaya to
+  //console.log(navigation)
+  //console.log(navigation.canGoBack())
+  //const [isSearchBarVisible,  setIsSearchBarVisible ] = React.useState(false)
+
+  //      <Searchbar   placeholder="Search"/> should show search bar upon hunt Icont
+  //const openDrawerFromBar= () => navigation.openDrawer()
+  //style={{height: '10%'}}
+  //<Appbar.Action icon="menu" onPress={openDrawerFromBar()} />
+  //<Appbar.BackAction onPress={navigation.goBack} />
+  //  {navigation.canGoBack()? <Appbar.BackAction onPress={navigation.goBack} /> : null} //weird routing behavior
+  return (
+    <Appbar.Header>
+      <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
+      <Appbar.Content
+        title="Audit Automation Tool"
+        style={{ alignItems: "center" }}
+      />
+      <Appbar.Action icon="bell" onPress={() => navigation.openDrawer()} />
+    </Appbar.Header>
+  );
+}
+
 export function MainDraw() {
+  //change screen title of stack
   return (
     <Drawer.Navigator
-      initialRouteName="Uploads"
+      initialRouteName="Jobs"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
+      screenOptions={{ header: (props) => <CustomNavigationBar {...props} /> }}
     >
       <Drawer.Screen name="Uploads" component={UploadScreen} />
-      <Drawer.Screen name="Details" component={DetailsScreen} />
+      <Drawer.Screen name="Job" component={JobStack} />
+      <Drawer.Screen name="Dedupe" component={DedupeStack} />
+      <Drawer.Screen name="CrossMatching" component={CrossMatchingStack} />
     </Drawer.Navigator>
-  );
-}
-
-      //<Drawer.Screen name="Home" component={HomeScreen} />
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text variant="displayLarge">Home Screen</Text>
-    </View>
-  );
-}
-
-function DetailsScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Details Screen</Text>
-    </View>
   );
 }

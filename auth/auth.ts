@@ -9,7 +9,7 @@ export const lTokenTransform = (prevState: any, action: any) => {
     case "SIGN_IN":
       return {
         ...prevState,
-        isSignout: true,
+        isSignout: false,
         //        userToken: action.token,
       };
     case "SIGN_OUT":
@@ -23,6 +23,6 @@ export const lTokenTransform = (prevState: any, action: any) => {
 
 export const initialTokenState = {
   isLoading: true,
-  isSignout: false,
+  isSignout: true,
   //  userToken: null,
 };

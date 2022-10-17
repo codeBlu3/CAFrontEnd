@@ -4,21 +4,31 @@ export default {
   prefixes: [Linking.makeUrl("/")],
   config: {
     screens: {
-      MaindDraw: {
+      MainDraw: {
         path: "main",
         screens: {
-	Uploads: 'uploads',
-      DedupeStack: {
-        path: "dedupe",
-        screens: {},
-      },
- 
-
-	},
+          Uploads: "uploads",
+          Job: {
+            path: "jobs",
+            screens: {
+              JobScreen: "joblist",
+              //DpKdistanceSelectionScreen: {path:" dpkdistance/:jobID"}
+              DpKdistanceSelectionScreen: "dpkdistance/:jobID",
+              DpResultsScreen: "dpresult/:jobID",
+            },
+          },
+          DedupeStack: {
+            path: "dedupe",
+            screens: {},
+          },
+          CrossMatchingStack: {
+            path: "crossmatch",
+            screens: {},
+          },
+        },
       },
       SignIn: "signin",
       SignUp: "signup",
-      NotFound: "*",
     },
   },
 };

@@ -11,7 +11,8 @@ export function SignInScreen() {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const { signIn }: any = React.useContext(AuthContext);
+  const { signIn, setCurrentAuthenticatedUser }: any =
+    React.useContext(AuthContext);
   const linkTo = useLinkTo();
 
   async function handleSignIn(username: string, password: string) {
@@ -31,6 +32,7 @@ export function SignInScreen() {
     let result = await response.json();
 
     if (result.loginStatus == "success") {
+      setCurrentAuthenticatedUser(result.userID);
       signIn();
     } else {
       alert("Invalid login , please try again");
@@ -75,5 +77,3 @@ export function SignInScreen() {
     </View>
   );
 }
-
-
