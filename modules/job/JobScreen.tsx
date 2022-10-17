@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation, useLinkTo } from "@react-navigation/native";
-import { Text, TextInput, Button, Card, Divider } from "react-native-paper";
+import { Text, TextInput, Button, Card,TouchableRipple,  Divider } from "react-native-paper";
 import { useQuery, useMutation } from "@apollo/client";
 
 import { GET_JOBS_BY_USERID } from "./requests";
@@ -40,9 +40,6 @@ export function JobScreen() {
   );
 }
 
-//<AddFile refetch={refetch} userID={userID} />
-//<ListFiles filePaths={filePaths} />
-//style = {{flexDirection: "row"}}
 function ListJobs({ jobData }: any) {
   const linkTo = useLinkTo();
   function handleRouteToResults(jobID: string, jobType: string) {

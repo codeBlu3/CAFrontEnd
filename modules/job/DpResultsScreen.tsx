@@ -19,7 +19,7 @@ import {
   useLinkTo,
 } from "@react-navigation/native";
 
-const FASTAPI_URL = "http://192.168.43.9:8000"; // this should be  env variable
+const FASTAPI_URL = "http://localhost:8000"; // this should be  env variable
 
 export function DpResultsScreen({ route }: any) {
   const { jobID } = route.params;
@@ -39,11 +39,14 @@ export function DpResultsScreen({ route }: any) {
   React.useEffect(() => {
     async function asRequestResultsHeaders() {
       let dfResultsHeaderUrl = `${FASTAPI_URL}/dfResultsHeaders`;
+      const jsonBody = JSON.stringify({ jobID});
       let response = await fetch(dfResultsHeaderUrl, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
+        body: jsonBody,
       });
       let result = await response.json();
       const ltcolumns = result.headerColumns;
@@ -53,11 +56,15 @@ export function DpResultsScreen({ route }: any) {
 
     async function asRequestDfWithGroupID() {
       let dfdpOrigWithDupIdUrl = `${FASTAPI_URL}/dfdpOrigWithDupId`;
+      const jsonBody = JSON.stringify({ jobID});
       let response = await fetch(dfdpOrigWithDupIdUrl, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
+
+        body: jsonBody,
       });
       let result = await response.json();
       const dedupeJson = JSON.parse(result);

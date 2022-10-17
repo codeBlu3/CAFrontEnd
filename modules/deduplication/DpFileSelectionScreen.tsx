@@ -76,7 +76,6 @@ export function DpFileSelectionScreen() {
     useMutation(START_DEDUPE_JOB);
 
   function handleFileHeaderQuery(filename: string) {
-    console.log("aw");
     getHeadersByFileName({ variables: { filename: filename } });
     setFilenameSel(filename);
   }

@@ -18,3 +18,11 @@ export const GET_MATCHESDATA_BY_JOBID = gql`
     }
   }
 `;
+
+export const MERGE_KDISTANCE_TO_ORIG = gql`
+  mutation mergeKdistanceToOrig($jobID: ID!, $kdistance: Float!) {
+    mergeKdistanceToOrig(jobID: $jobID,kdistance: $kdistance )  
+  }
+`;
+
+

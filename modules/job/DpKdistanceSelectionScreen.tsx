@@ -19,7 +19,7 @@ import {
 } from "react-native-paper";
 import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
 
-import { GET_MATCHESDATA_BY_JOBID } from "./requests";
+import { GET_MATCHESDATA_BY_JOBID, MERGE_KDISTANCE_TO_ORIG } from "./requests";
 
 const FASTAPI_URL = "http://192.168.43.9:8000"; // this should be  env variable
 
@@ -43,11 +43,17 @@ export function DpKdistanceSelectionScreen({ route }: any) {
   const [from, setFrom] = React.useState(0);
   const [to, setTo] = React.useState(0);
 
-  console.log(kdistance);
   function filterSortData() {}
   const { loading, error, data } = useQuery(GET_MATCHESDATA_BY_JOBID, {
     variables: { jobID },
   });
+
+
+
+  const [mergeKdistanceToOrig, { data: datakd, loading: loadingkd, error: errorkd }] =
+    useMutation(MERGE_KDISTANCE_TO_ORIG);
+
+
 
   React.useEffect(() => {
     async function asRequestdfmatchesdata() {
@@ -99,12 +105,31 @@ export function DpKdistanceSelectionScreen({ route }: any) {
     if (result.status == "success") {
       navigation.navigate("DedupeResult");
     }
+      const job: any = await startDedupeJob({
+        variables: { userID, filename: filenameSel, headerselected },
+      });
+      const jobID = job.data.startDedupeJob.jobID;
+      if (jobID) {
+        alert(`job with ${jobID}`);
+        //navigation.navigate('/main/uploads')
+        linkTo("/main/jobs/joblist");
+      }
+
   */
+  console.log(jobID)
+  console.log(kdistance)
+
     //transfer to different result screen
+    const kdstat =  await mergeKdistanceToOrig({
+    variables : {jobID, kdistance}
+    })
+    console.log(kdstat)
+    if (kdstat.data.mergeKdistanceToOrig ==='success'){
+      linkTo(`/main/jobs/dpresult/${jobID}`);
+    }
 
-    linkTo(`/main/jobs/dpresult/${jobID}`);
   }
-
+// add loading
   return (
     <View>
       <TextInput
