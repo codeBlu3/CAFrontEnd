@@ -1,6 +1,6 @@
 import React from "react";
 
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import {
   useTheme,
   Appbar,
@@ -84,6 +84,10 @@ function CustomNavigationBar({ navigation }) {
   //<Appbar.Action icon="menu" onPress={openDrawerFromBar()} />
   //<Appbar.BackAction onPress={navigation.goBack} />
   //  {navigation.canGoBack()? <Appbar.BackAction onPress={navigation.goBack} /> : null} //weird routing behavior
+  // also hide menu from appbar if screen is big
+  // expo push notifs. dapat may add to eh
+  //convert  to toggle ba?
+
   return (
     <Appbar.Header>
       <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
@@ -91,18 +95,20 @@ function CustomNavigationBar({ navigation }) {
         title="Audit Automation Tool"
         style={{ alignItems: "center" }}
       />
-      <Appbar.Action icon="bell" onPress={() => navigation.openDrawer()} />
+      <Appbar.Action icon="bell" onPress={() => navigation.closeDrawer()} />
     </Appbar.Header>
   );
 }
 
 export function MainDraw() {
   //change screen title of stack
+  // convert to use bp 
+    const dimensions = useWindowDimensions();
   return (
     <Drawer.Navigator
       initialRouteName="Jobs"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={{ header: (props) => <CustomNavigationBar {...props} /> }}
+      screenOptions={{drawerType: dimensions.width >= 768 ? 'permanent' : 'front' , header: (props) => <CustomNavigationBar {...props} /> }}
     >
       <Drawer.Screen name="Uploads" component={UploadScreen} />
       <Drawer.Screen name="Job" component={JobStack} />

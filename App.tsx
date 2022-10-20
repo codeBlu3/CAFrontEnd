@@ -6,9 +6,8 @@ import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 // Theming
 import { Provider as PaperProvider } from "react-native-paper";
 import {
-  CombinedDarkTheme,
-  CombinedDefaultTheme,
-  LightTheme,
+  CombinedDarkThemeBp,
+  CombinedDefaultThemeBp,
 } from "./themes/themingConfig";
 import { PreferencesContext } from "./themes/PreferencesContext";
 
@@ -36,10 +35,12 @@ import { client } from "./graphql/config";
 
 const AuthStack = createNativeStackNavigator();
 
+// converth auth and themes to hooks 
 export default function App() {
   //Themes
   const [isThemeDark, setIsThemeDark] = React.useState(false);
-  let theme = isThemeDark ? CombinedDarkTheme : CombinedDefaultTheme;
+  let theme = isThemeDark ? CombinedDarkThemeBp : CombinedDefaultThemeBp;
+  console.log(theme)
 
   const toggleTheme = React.useCallback(() => {
     return setIsThemeDark(!isThemeDark);
