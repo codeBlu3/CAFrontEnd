@@ -22,6 +22,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { AuthContext } from "../auth/AuthContext";
+import {useBreakpoint} from "../hooks/useBreakpoint"
 
 //screens
 import { UploadScreen } from "../modules/upload/UploadScreen";
@@ -87,10 +88,13 @@ function CustomNavigationBar({ navigation }) {
   // also hide menu from appbar if screen is big
   // expo push notifs. dapat may add to eh
   //convert  to toggle ba?
+  const { breakpoint } = useBreakpoint();
 
   return (
     <Appbar.Header>
+    { breakpoint ==='sm' ?
       <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
+    : null} 
       <Appbar.Content
         title="Audit Automation Tool"
         style={{ alignItems: "center" }}
@@ -102,13 +106,14 @@ function CustomNavigationBar({ navigation }) {
 
 export function MainDraw() {
   //change screen title of stack
-  // convert to use bp 
-    const dimensions = useWindowDimensions();
+  // use same logic execution on this bp
+  const { breakpoint } = useBreakpoint();
+
   return (
     <Drawer.Navigator
       initialRouteName="Jobs"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={{drawerType: dimensions.width >= 768 ? 'permanent' : 'front' , header: (props) => <CustomNavigationBar {...props} /> }}
+      screenOptions={{drawerType: breakpoint ==='sm' ? 'front' : 'permanent' , header: (props) => <CustomNavigationBar {...props} /> }}
     >
       <Drawer.Screen name="Uploads" component={UploadScreen} />
       <Drawer.Screen name="Job" component={JobStack} />

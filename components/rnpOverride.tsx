@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Text} from 'react-native-paper';
 
-import {useBreakpoint} from "../../hooks/useBreakpoint"
+import {useBreakpoint} from "../hooks/useBreakpoint"
 
-export default function responsiveText(props) {
+export function RSText(props) {
   const {width, breakpoint } = useBreakpoint();
 
   const variantMap  = {xs: "headlineSmall",

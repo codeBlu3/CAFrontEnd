@@ -126,12 +126,12 @@ function AddFile({ refetch, userID }: any) {
   }
 
   return (
-    <View>
+    <View style={styles.container}>
       <StatusBar style="auto" />
       <Button onPress={asHandleSelectFile}>Select File</Button>
       {documentUpload && (
         <>
-          <Text>{documentUpload.name}</Text>
+          <Text >{documentUpload.name}</Text>
           <Button
             mode="contained"
             onPress={() =>
@@ -152,8 +152,6 @@ function AddFile({ refetch, userID }: any) {
   );
 }
 
-/*
-    <View style={styles.container}>
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -167,7 +165,6 @@ const styles = StyleSheet.create({
 
 
 
-*/
 /*
   const [uploadID, setUploadID] = React.useState("");
   const [filePaths, setFilePaths] = React.useState([]);

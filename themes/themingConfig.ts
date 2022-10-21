@@ -7,15 +7,15 @@ import {
   MD3DarkTheme as PaperDarkTheme,
   DefaultTheme as PaperDefaultTheme,
   configureFonts,
-} from "react-native-paper";
 
+} from "react-native-paper";
 import merge from "deepmerge";
 
 import { fontConfig } from "./fontConfig";
 
 declare global {
   namespace ReactNativePaper {
-    type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    type Breakpoint =  'sm' | 'md' | 'lg' ;
 
     interface ThemeBreakpoints {
       values: { [k in Breakpoint]: number };
@@ -28,6 +28,11 @@ declare global {
 }
 
 
+
+//const { lightScheme } = createDynamicThemeColors({ sourceColor: '#FFFF00' });
+console.log(NavigationDefaultTheme)
+console.log(PaperDefaultTheme)
+
 const CombinedDefaultTheme = merge(
   PaperDefaultTheme,
   NavigationDefaultTheme
@@ -37,11 +42,9 @@ export const CombinedDefaultThemeBp = {
   ...CombinedDefaultTheme,
   breakpoints: {
     values: {
-      xs: 0,
-      sm: 600,
+      sm: 0,
       md: 900,
       lg: 1200,
-      xl: 1536,
     },
   },
 };
@@ -52,11 +55,9 @@ export const CombinedDarkThemeBp = {
   ...CombinedDarkTheme,
   breakpoints: {
     values: {
-      xs: 0,
-      sm: 600,
+      sm: 0,
       md: 900,
       lg: 1200,
-      xl: 1536,
     },
   },
 };

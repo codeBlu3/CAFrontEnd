@@ -16,7 +16,7 @@ export function useBreakpoint(): {
     if (nearestBrekpoint) {
       return nearestBrekpoint[0] as ReactNativePaper.Breakpoint;
     }
-    return 'xs';
+    return 'sm';
   }, [width, theme]);
 
   return {
