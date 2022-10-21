@@ -2,26 +2,6 @@ import "react-native-gesture-handler";
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, TextInput, Button } from "react-native";
-import Constants from "expo-constants";
-
-//env
-//import * as dotenv from 'dotenv'
-//dotenv.config()
-//const apiUrl = Constants.expoConfig.extra.apiUrl;
-console.log(Constants);
-//const apiUrl = Constants.expoConfig.extra.apiUrl
-//console.log(apiUrl)
-console.log(process.env);
-
-const a = process.env;
-console.log(a.APP_MANIFEST.extra.apiURL);
-const b = a.APP_MANIFEST;
-console.log(b.extra);
-let apiUrl: any = process.env;
-apiUrl = apiUrl.APP_MANIFEST;
-apiUrl = apiUrl.extra;
-apiUrl = apiUrl.apiUrl;
-console.log(apiUrl);
 
 // Theming
 import { Provider as PaperProvider } from "react-native-paper";

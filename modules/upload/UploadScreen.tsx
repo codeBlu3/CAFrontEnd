@@ -12,8 +12,10 @@ import {
 } from "./requests";
 
 import { AuthContext } from "../../auth/AuthContext";
-// kailangan ang current user context dito
-const UPLOAD_URL = "http://192.168.43.9:3000"; // this should be  env variable
+
+
+const SERVERHOSTNAME:any = process.env.APP_MANIFEST.extra.SERVERHOSTNAME
+const UPLOAD_URL = `http://${SERVERHOSTNAME}:3000`; // this should be  env variable
 
 export function UploadScreen() {
   const { currentAuthenticatedUser }: any = React.useContext(AuthContext);

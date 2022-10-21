@@ -5,7 +5,8 @@ import { useLinkTo } from "@react-navigation/native";
 
 import { AuthContext } from "./AuthContext";
 
-const AUTH_URL = "http://localhost:4000"; // this should be  env variable
+const SERVERHOSTNAME:any = process.env.APP_MANIFEST.extra.SERVERHOSTNAME
+const AUTH_URL = `http://${SERVERHOSTNAME}:4000`;
 
 export function SignUpScreen() {
   const [username, setUsername] = React.useState("");

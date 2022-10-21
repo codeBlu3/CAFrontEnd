@@ -27,8 +27,8 @@ declare global {
 }
 
 //const { lightScheme } = createDynamicThemeColors({ sourceColor: '#FFFF00' });
-console.log(NavigationDefaultTheme);
-console.log(PaperDefaultTheme);
+//console.log(NavigationDefaultTheme);
+//console.log(PaperDefaultTheme);
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 
