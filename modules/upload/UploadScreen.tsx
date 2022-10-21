@@ -131,7 +131,7 @@ function AddFile({ refetch, userID }: any) {
       <Button onPress={asHandleSelectFile}>Select File</Button>
       {documentUpload && (
         <>
-          <Text >{documentUpload.name}</Text>
+          <Text>{documentUpload.name}</Text>
           <Button
             mode="contained"
             onPress={() =>
@@ -155,17 +155,14 @@ function AddFile({ refetch, userID }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
-
-
-
-
 /*
+
+    backgroundColor: '#fff',
   const [uploadID, setUploadID] = React.useState("");
   const [filePaths, setFilePaths] = React.useState([]);
 

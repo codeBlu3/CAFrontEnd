@@ -4,8 +4,7 @@ import { Text, TextInput, Button, Card, Divider } from "react-native-paper";
 import { useLinkTo } from "@react-navigation/native";
 
 import { AuthContext } from "./AuthContext";
-import {useBreakpoint} from "../hooks/useBreakpoint"
-
+import { useBreakpoint } from "../hooks/useBreakpoint";
 
 const AUTH_URL = "http://localhost:4000"; // this should be  env variable
 
@@ -16,9 +15,7 @@ export function SignInScreen() {
   const { signIn, setCurrentAuthenticatedUser }: any =
     React.useContext(AuthContext);
   const linkTo = useLinkTo();
-  const {width, breakpoint } = useBreakpoint();
-
-
+  const { width, breakpoint } = useBreakpoint();
 
   async function handleSignIn(username: string, password: string) {
     let postUrl = `${AUTH_URL}/login`;
@@ -45,8 +42,8 @@ export function SignInScreen() {
   }
 
   return (
-    <View style = {{ flex: 1, justifyContent: 'center', alignItems: 'center'}}  >
-      <Card style = {{width: 400}}>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Card style={{ width: 400 }}>
         <Card.Content>
           <TextInput
             mode="outlined"
@@ -54,7 +51,7 @@ export function SignInScreen() {
             value={username}
             onChangeText={setUsername}
           />
-      <Divider style ={{margin: 5}} />
+          <Divider style={{ margin: 5 }} />
           <TextInput
             mode="outlined"
             label="Password"
@@ -62,26 +59,22 @@ export function SignInScreen() {
             onChangeText={setPassword}
             secureTextEntry
           />
-      <Divider style ={{margin: 5}} />
-      <Button
-        mode="contained"
-        compact={false}
-        onPress={() => handleSignIn(username, password)}
-      >
-        <Text variant="headlineMedium">Sign In</Text>
-      </Button>
+          <Divider style={{ margin: 5 }} />
+          <Button
+            mode="contained"
+            compact={false}
+            onPress={() => handleSignIn(username, password)}
+          >
+            <Text variant="headlineMedium">LOG-IN</Text>
+          </Button>
 
-      <Divider style ={{margin: 5}} />
+          <Divider style={{ margin: 5 }} />
 
-      <Button 
-      mode="contained" onPress={() => linkTo("/signup")}>
-        <Text variant="headlineMedium">Register</Text>
-      </Button>
-
- 
+          <Button mode="contained" onPress={() => linkTo("/signup")}>
+            <Text variant="headlineMedium">Register</Text>
+          </Button>
         </Card.Content>
       </Card>
     </View>
   );
 }
-

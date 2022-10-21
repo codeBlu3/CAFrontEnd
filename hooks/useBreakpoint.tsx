@@ -1,11 +1,11 @@
-import { useMemo } from 'react';
-import { useWindowDimensions } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import { useMemo } from "react";
+import { useWindowDimensions } from "react-native";
+import { useTheme } from "react-native-paper";
 
 export function useBreakpoint(): {
   width: number;
   breakpoint: ReactNativePaper.Breakpoint;
-}{
+} {
   const theme = useTheme();
   const { width } = useWindowDimensions();
 
@@ -16,11 +16,11 @@ export function useBreakpoint(): {
     if (nearestBrekpoint) {
       return nearestBrekpoint[0] as ReactNativePaper.Breakpoint;
     }
-    return 'sm';
+    return "sm";
   }, [width, theme]);
 
   return {
     width,
     breakpoint,
   };
-};
+}

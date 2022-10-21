@@ -39,7 +39,7 @@ export function DpResultsScreen({ route }: any) {
   React.useEffect(() => {
     async function asRequestResultsHeaders() {
       let dfResultsHeaderUrl = `${FASTAPI_URL}/dfResultsHeaders`;
-      const jsonBody = JSON.stringify({ jobID});
+      const jsonBody = JSON.stringify({ jobID });
       let response = await fetch(dfResultsHeaderUrl, {
         method: "POST",
         headers: {
@@ -56,7 +56,7 @@ export function DpResultsScreen({ route }: any) {
 
     async function asRequestDfWithGroupID() {
       let dfdpOrigWithDupIdUrl = `${FASTAPI_URL}/dfdpOrigWithDupId`;
-      const jsonBody = JSON.stringify({ jobID});
+      const jsonBody = JSON.stringify({ jobID });
       let response = await fetch(dfdpOrigWithDupIdUrl, {
         method: "POST",
         headers: {

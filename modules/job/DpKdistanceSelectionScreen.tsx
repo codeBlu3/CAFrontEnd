@@ -48,12 +48,10 @@ export function DpKdistanceSelectionScreen({ route }: any) {
     variables: { jobID },
   });
 
-
-
-  const [mergeKdistanceToOrig, { data: datakd, loading: loadingkd, error: errorkd }] =
-    useMutation(MERGE_KDISTANCE_TO_ORIG);
-
-
+  const [
+    mergeKdistanceToOrig,
+    { data: datakd, loading: loadingkd, error: errorkd },
+  ] = useMutation(MERGE_KDISTANCE_TO_ORIG);
 
   React.useEffect(() => {
     async function asRequestdfmatchesdata() {
@@ -116,20 +114,19 @@ export function DpKdistanceSelectionScreen({ route }: any) {
       }
 
   */
-  console.log(jobID)
-  console.log(kdistance)
+    console.log(jobID);
+    console.log(kdistance);
 
     //transfer to different result screen
-    const kdstat =  await mergeKdistanceToOrig({
-    variables : {jobID, kdistance}
-    })
-    console.log(kdstat)
-    if (kdstat.data.mergeKdistanceToOrig ==='success'){
+    const kdstat = await mergeKdistanceToOrig({
+      variables: { jobID, kdistance },
+    });
+    console.log(kdstat);
+    if (kdstat.data.mergeKdistanceToOrig === "success") {
       linkTo(`/main/jobs/dpresult/${jobID}`);
     }
-
   }
-// add loading
+  // add loading
   return (
     <View>
       <TextInput

@@ -1,32 +1,26 @@
-
-       //<Text variant={variantMap[breakpoint]}>Test</Text>
-const variantMap  = {xs: "headlineSmall",
+//<Text variant={variantMap[breakpoint]}>Test</Text>
+const variantMap = {
+  xs: "headlineSmall",
   sm: "headlineSmall",
   md: "headlineMedium",
   lg: "headlineLarge",
-  xl: "headlineLarge"
-}
+  xl: "headlineLarge",
+};
 
+// i can use bp as key and equv text variant as as variant value
+const headlineMap = {
+  sm: "headlineSmall",
+  md: "headlineMedium",
+  lg: "headlineLarge",
+};
 
+const displayMap = {
+  sm: "displaySmall",
+  md: "displayMedium",
+  lg: "displayLarge",
+};
 
-// i can use bp as key and equv text variant as as variant value 
-const headlineMap  = {
-sm: "headlineSmall",
-md: "headlineMedium",
-lg: "headlineLarge",
-}
-
-const displayMap  = {
-sm: "displaySmall",
-md: "displayMedium",
-lg: "displayLarge",
-}
-
-
-
-
-
-// how to map switch case? 
+// how to map switch case?
 //input bp, output, text
 // if bp m return
 /*
@@ -37,8 +31,4 @@ lg: "displayLarge",
 
 */
 
-// i can use bp as key and equv text variant as as variant value 
-
-
-
-
+// i can use bp as key and equv text variant as as variant value

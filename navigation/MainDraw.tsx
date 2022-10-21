@@ -22,7 +22,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { AuthContext } from "../auth/AuthContext";
-import {useBreakpoint} from "../hooks/useBreakpoint"
+import { useBreakpoint } from "../hooks/useBreakpoint";
 
 //screens
 import { UploadScreen } from "../modules/upload/UploadScreen";
@@ -46,10 +46,7 @@ function CustomDrawerContent(props: any) {
   const [active, setActive] = React.useState("");
 
   const { signOut }: any = React.useContext(AuthContext);
-
-  return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
+  /*
       <Drawernp.Section>
         <Drawernp.Item
           label="First Item"
@@ -68,6 +65,13 @@ function CustomDrawerContent(props: any) {
         />
         <Drawernp.Item label="Log Out" onPress={() => signOut()} />
       </Drawernp.Section>
+ 
+*/
+  return (
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <DrawerItem label="Toggle Theme" onPress={() => toggleTheme()} />
+      <DrawerItem label="Log Out" onPress={() => signOut()} />
     </DrawerContentScrollView>
   );
 }
@@ -92,9 +96,9 @@ function CustomNavigationBar({ navigation }) {
 
   return (
     <Appbar.Header>
-    { breakpoint ==='sm' ?
-      <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
-    : null} 
+      {breakpoint === "sm" ? (
+        <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
+      ) : null}
       <Appbar.Content
         title="Audit Automation Tool"
         style={{ alignItems: "center" }}
@@ -105,15 +109,16 @@ function CustomNavigationBar({ navigation }) {
 }
 
 export function MainDraw() {
-  //change screen title of stack
-  // use same logic execution on this bp
   const { breakpoint } = useBreakpoint();
 
   return (
     <Drawer.Navigator
       initialRouteName="Jobs"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      screenOptions={{drawerType: breakpoint ==='sm' ? 'front' : 'permanent' , header: (props) => <CustomNavigationBar {...props} /> }}
+      screenOptions={{
+        drawerType: breakpoint === "sm" ? "front" : "permanent",
+        header: (props) => <CustomNavigationBar {...props} />,
+      }}
     >
       <Drawer.Screen name="Uploads" component={UploadScreen} />
       <Drawer.Screen name="Job" component={JobStack} />

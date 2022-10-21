@@ -1,21 +1,18 @@
-import * as React from 'react';
-import { Text} from 'react-native-paper';
+import * as React from "react";
+import { Text } from "react-native-paper";
 
-import {useBreakpoint} from "../hooks/useBreakpoint"
+import { useBreakpoint } from "../hooks/useBreakpoint";
 
 export function RSText(props) {
-  const {width, breakpoint } = useBreakpoint();
+  const { width, breakpoint } = useBreakpoint();
 
-  const variantMap  = {xs: "headlineSmall",
+  const variantMap = {
+    xs: "headlineSmall",
     sm: "headlineSmall",
     md: "headlineMedium",
     lg: "headlineLarge",
-    xl: "headlineLarge"
-  }
+    xl: "headlineLarge",
+  };
 
-  return (
-    <Text variant={variantMap[breakpoint]}
-     {...props}
-    />
-  );
+  return <Text variant={variantMap[breakpoint]} {...props} />;
 }
