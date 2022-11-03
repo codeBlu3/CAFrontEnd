@@ -1,9 +1,10 @@
 import React from "react";
-import { ScrollView, FlatList, StyleSheet, View } from "react-native";
+import {Platform , ScrollView, FlatList, StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation, useLinkTo } from "@react-navigation/native";
 import { Text, TextInput, Button, Card, Divider } from "react-native-paper";
 import { useQuery, useMutation } from "@apollo/client";
+import Constants from 'expo-constants';
 import * as DocumentPicker from "expo-document-picker";
 
 import {
@@ -13,8 +14,8 @@ import {
 
 import { AuthContext } from "../../auth/AuthContext";
 
+const SERVERHOSTNAME:string = Constants.expoConfig.extra.SERVERHOSTNAME
 
-const SERVERHOSTNAME:any = process.env.APP_MANIFEST.extra.SERVERHOSTNAME
 const UPLOAD_URL = `http://${SERVERHOSTNAME}:3000`; // this should be  env variable
 
 export function UploadScreen() {
@@ -37,10 +38,10 @@ export function UploadScreen() {
   }, [data]);
 
   return (
-    <View>
+    <ScrollView>
       <ListFiles filePaths={filePaths} />
       <AddFile refetch={refetch} userID={userID} />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -130,12 +131,12 @@ function AddFile({ refetch, userID }: any) {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <Button onPress={asHandleSelectFile}>Select File</Button>
+      <Button mode="contained" onPress={asHandleSelectFile}>Select File</Button>
       {documentUpload && (
         <>
           <Text>{documentUpload.name}</Text>
           <Button
-            mode="contained"
+            mode="outlined"
             onPress={() =>
               asHandleUploadDocument(
                 documentUpload,

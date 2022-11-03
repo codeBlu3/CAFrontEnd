@@ -1,7 +1,9 @@
 import "react-native-gesture-handler";
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import Constants from 'expo-constants';
+
+import {Platform , StyleSheet, Text, View, TextInput, Button } from "react-native";
 
 // Theming
 import { Provider as PaperProvider } from "react-native-paper";
@@ -33,14 +35,17 @@ import {
 } from "@apollo/client";
 import { client } from "./graphql/config";
 
+
 const AuthStack = createNativeStackNavigator();
 
+
 // converth auth and themes to hooks
+//console.log(Constants)
 export default function App() {
   //Themes
   const [isThemeDark, setIsThemeDark] = React.useState(false);
   let theme = isThemeDark ? CombinedDarkThemeBp : CombinedDefaultThemeBp;
-  console.log(theme);
+  //console.log(theme);
 
   const toggleTheme = React.useCallback(() => {
     return setIsThemeDark(!isThemeDark);

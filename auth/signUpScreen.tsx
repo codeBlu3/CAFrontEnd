@@ -1,11 +1,12 @@
 import React from "react";
-import { View } from "react-native";
+import {Platform , View } from "react-native";
 import { Text, TextInput, Button, Card, Divider } from "react-native-paper";
 import { useLinkTo } from "@react-navigation/native";
+import Constants from 'expo-constants';
 
 import { AuthContext } from "./AuthContext";
 
-const SERVERHOSTNAME:any = process.env.APP_MANIFEST.extra.SERVERHOSTNAME
+const SERVERHOSTNAME:string = Constants.expoConfig.extra.SERVERHOSTNAME
 const AUTH_URL = `http://${SERVERHOSTNAME}:4000`;
 
 export function SignUpScreen() {
