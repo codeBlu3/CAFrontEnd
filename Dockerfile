@@ -11,7 +11,7 @@ COPY app.json ./
 #ENTRYPOINT ["npm", "start", "--web"]
 #ENTRYPOINT ["npm", "start"]
 #ENTRYPOINT ["npx", "expo", "start"]
-ENTRYPOINT [ "expo", "start"]
+ENTRYPOINT [ "expo", "start", "--web"]
 #CMD ["web"]
 
 

@@ -32,7 +32,7 @@ export function SignInScreen() {
     };
 
     const response = await fetch(postUrl, fetchOptions);
-    console.log(response);
+    //console.log(response);
     let result = await response.json();
 
     if (result.loginStatus == "success") {

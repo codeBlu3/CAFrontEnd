@@ -6,6 +6,9 @@ import { Text, TextInput, Button, Card, Divider } from "react-native-paper";
 import { useQuery, useMutation } from "@apollo/client";
 import Constants from 'expo-constants';
 import * as DocumentPicker from "expo-document-picker";
+import axios from "axios";
+import * as FileSystem from 'expo-file-system';
+
 
 import {
   GET_FILES_UPLOADED_BY_USERID,
@@ -16,7 +19,29 @@ import { AuthContext } from "../../auth/AuthContext";
 
 const SERVERHOSTNAME:string = Constants.expoConfig.extra.SERVERHOSTNAME
 
-const UPLOAD_URL = `http://${SERVERHOSTNAME}:3000`; // this should be  env variable
+const UPLOAD_URL = `http://${SERVERHOSTNAME}:3000`;
+
+
+const b64toBlob = (b64Data:string, contentType='', sliceSize=512) => {
+  const byteCharacters = atob(b64Data);
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  const blob = new Blob(byteArrays, {type: contentType});
+  return blob;
+}
+
 
 export function UploadScreen() {
   const { currentAuthenticatedUser }: any = React.useContext(AuthContext);
@@ -75,7 +100,6 @@ function AddFile({ refetch, userID }: any) {
   async function asHandleSelectFile() {
     let documentPickerResult: any = await DocumentPicker.getDocumentAsync({
       type: "text/csv",
-      base64: true,
     });
     console.log(documentPickerResult); //may bug pa dito
 
@@ -89,16 +113,48 @@ function AddFile({ refetch, userID }: any) {
 
   async function asUploadDocument(documentUpload: any) {
     //split coding
-    //console.log(documentUpload)
-    let csvData = documentUpload.uri.split(",")[1];
+    console.log(documentUpload)
+    let csvData 
+    if (Platform.OS === 'web'){
+      //convert to blob
+      console.log('web')
+      csvData = documentUpload.uri.split(",")[1];
+    }else{
+    //read file as blob
+      console.log('android')
+      csvData = await FileSystem.readAsStringAsync(documentUpload.uri,{ encoding: FileSystem.EncodingType.Base64})
+      console.log(csvData)
+    }
 
+    const spongeblob = b64toBlob(csvData)
+    console.log(spongeblob)
+
+// dont use form data 
     const formData = new FormData();
     //formData.append("datauri", documentUpload.uri);
+    //formData.append("uri", documentUpload.uri);
     formData.append("datauri", csvData);
-
+    //formData.append("blob", spongeblob);
     formData.append("filename", documentUpload.name);
+    //let fetchUrl = `${UPLOAD_URL}/api/upload`;
+    console.log(formData)
+    let fetchOptions = { method: "POST", 
+    body: formData,
+    headers: {
+                'Content-Type': 'multipart/form-data; ',
+		          },};
+    console.log(fetchOptions)
+
+/*
+        const requestOptions = {
+            method: 'POST',
+            body: spongeblob,
+        };
+			
+	console.log(requestOptions)
+*/
+    //let fetchUrl = `${UPLOAD_URL}/api/uploadchunk`;
     let fetchUrl = `${UPLOAD_URL}/api/upload`;
-    let fetchOptions = { method: "POST", body: formData };
     let response = await fetch(fetchUrl, fetchOptions);
     let result = await response.json();
     //console.log(result);

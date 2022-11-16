@@ -39,7 +39,7 @@ export function JobScreen() {
     }
   }, [data]);
 
-  console.log(jobData);
+  //console.log(jobData);
   return (
     <View>
       <ListJobs jobData={jobData} />
