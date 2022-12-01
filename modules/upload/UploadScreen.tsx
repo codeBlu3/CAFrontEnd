@@ -1,14 +1,14 @@
 import React from "react";
-import {Platform , ScrollView, FlatList, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, FlatList, StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation, useLinkTo } from "@react-navigation/native";
 import { Text, TextInput, Button, Card, Divider } from "react-native-paper";
 import { useQuery, useMutation } from "@apollo/client";
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
-import * as FileSystem from 'expo-file-system';
-
+import * as FileSystem from "expo-file-system";
+import md5 from "blueimp-md5";
 
 import {
   GET_FILES_UPLOADED_BY_USERID,
@@ -17,30 +17,8 @@ import {
 
 import { AuthContext } from "../../auth/AuthContext";
 
-const SERVERHOSTNAME:string = Constants.expoConfig.extra.SERVERHOSTNAME
-
+const SERVERHOSTNAME: string = Constants.expoConfig.extra.SERVERHOSTNAME;
 const UPLOAD_URL = `http://${SERVERHOSTNAME}:3000`;
-
-
-const b64toBlob = (b64Data:string, contentType='', sliceSize=512) => {
-  const byteCharacters = atob(b64Data);
-  const byteArrays = [];
-
-  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-    const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-    const byteNumbers = new Array(slice.length);
-    for (let i = 0; i < slice.length; i++) {
-      byteNumbers[i] = slice.charCodeAt(i);
-    }
-
-    const byteArray = new Uint8Array(byteNumbers);
-    byteArrays.push(byteArray);
-  }
-
-  const blob = new Blob(byteArrays, {type: contentType});
-  return blob;
-}
 
 
 export function UploadScreen() {
@@ -92,6 +70,8 @@ function ListFiles({ filePaths }: any) {
 }
 
 function AddFile({ refetch, userID }: any) {
+  // kailangan to i refactor
+  // add upload status slider 
   const [documentUpload, setDocumentUpload] = React.useState(null);
   const [attachFileUpload, { data, loading, error }] = useMutation(
     ATTACH_FILEUPLOAD_TO_USERID
@@ -101,7 +81,6 @@ function AddFile({ refetch, userID }: any) {
     let documentPickerResult: any = await DocumentPicker.getDocumentAsync({
       type: "text/csv",
     });
-    console.log(documentPickerResult); //may bug pa dito
 
     if (
       documentPickerResult.type == "success" &&
@@ -111,55 +90,53 @@ function AddFile({ refetch, userID }: any) {
     }
   }
 
-  async function asUploadDocument(documentUpload: any) {
-    //split coding
-    console.log(documentUpload)
-    let csvData 
-    if (Platform.OS === 'web'){
-      //convert to blob
-      console.log('web')
+  async function asChunkUpload(documentUpload: any) {
+    let csvData;
+    if (Platform.OS === "web") {
       csvData = documentUpload.uri.split(",")[1];
-    }else{
-    //read file as blob
-      console.log('android')
-      csvData = await FileSystem.readAsStringAsync(documentUpload.uri,{ encoding: FileSystem.EncodingType.Base64})
-      console.log(csvData)
+    } else {
+      csvData = await FileSystem.readAsStringAsync(documentUpload.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
     }
 
-    const spongeblob = b64toBlob(csvData)
-    console.log(spongeblob)
+    const hash = md5(csvData);
+    const blob = b64toBlob(csvData, "text/csv");
+    const chunks = chunkBlob(blob);
+    // add reposting if failure
 
-// dont use form data 
-    const formData = new FormData();
-    //formData.append("datauri", documentUpload.uri);
-    //formData.append("uri", documentUpload.uri);
-    formData.append("datauri", csvData);
-    //formData.append("blob", spongeblob);
-    formData.append("filename", documentUpload.name);
-    //let fetchUrl = `${UPLOAD_URL}/api/upload`;
-    console.log(formData)
-    let fetchOptions = { method: "POST", 
-    body: formData,
-    headers: {
-                'Content-Type': 'multipart/form-data; ',
-		          },};
-    console.log(fetchOptions)
+    const postTasks = await PostRunner(chunks, hash);
+    const jsonres = await Promise.all(postTasks)
+      .then((values) => {
+	return values
+      })
 
-/*
-        const requestOptions = {
-            method: 'POST',
-            body: spongeblob,
-        };
-			
-	console.log(requestOptions)
-*/
-    //let fetchUrl = `${UPLOAD_URL}/api/uploadchunk`;
-    let fetchUrl = `${UPLOAD_URL}/api/upload`;
-    let response = await fetch(fetchUrl, fetchOptions);
-    let result = await response.json();
-    //console.log(result);
-    return result;
+    let chunkStat:any  = {}
+    if  (jsonres.every(item => item.uploadstatus === 'success')){
+       chunkStat['status'] = 'successful'
+       chunkStat['hash'] = hash
+    }else {
+
+       chunkStat['status'] = 'unsuccessful'
+    }
+    return chunkStat
   }
+
+  async function asMergeFile(hash:string, filename:string) {
+  console.log(hash)
+  console.log(filename)
+        const formData = new FormData();
+        formData.append("filehash", hash);
+        formData.append("filename", filename);
+        let fetchOptions = { method: "POST", body: formData };
+        let fetchUrl = `${UPLOAD_URL}/api/mergefile`;
+        let response = await fetch(fetchUrl, fetchOptions);
+        let result = await response.json();
+	console.log(result)
+        return result;
+
+  }
+  
 
   async function asHandleUploadDocument(
     documentUpload: any,
@@ -168,8 +145,9 @@ function AddFile({ refetch, userID }: any) {
     refetch: any,
     setDocumentUpload: any
   ) {
-    let res = await asUploadDocument(documentUpload);
-    console.log(userID);
+    let chunkStat = await asChunkUpload(documentUpload);
+    if (chunkStat.status === "successful"){ //flawed logic
+      let res = await asMergeFile(chunkStat.hash, documentUpload.name)
     if (res.uploadstatus == "success") {
       let uploadID = await attachFileUpload({
         variables: { userID, filepath: res.filename },
@@ -182,12 +160,22 @@ function AddFile({ refetch, userID }: any) {
       // this should trigger refetch
       //navigation.navigate("/home/dedupe");
     }
+
+    }
+
+
+
+
+
+    // add merge request 
   }
 
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <Button mode="contained" onPress={asHandleSelectFile}>Select File</Button>
+      <Button mode="contained" onPress={asHandleSelectFile}>
+        Select File
+      </Button>
       {documentUpload && (
         <>
           <Text>{documentUpload.name}</Text>
@@ -218,6 +206,56 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+    function chunkBlob(blob: any) {
+      // make size as params
+      let size = 1048576 * 2;
+      let fileChunks: any[] = [];
+      let index = 0; //Section num
+      for (let cur = 0; cur < blob.size; cur += size) {
+        fileChunks.push({
+          sequence: index++,
+          chunk: blob.slice(cur, cur + size),
+        });
+      }
+
+      return fileChunks;
+    }
+
+    async function PostRunner(fileChunks: any[], hash: string) {
+      const postTasks: any[] = fileChunks.map(async function createPost(arr) {
+        const formData = new FormData();
+        formData.append("filehash", hash);
+        formData.append("sequence", arr.sequence);
+        formData.append("chunk", arr.chunk);
+        let fetchOptions = { method: "POST", body: formData };
+        let fetchUrl = `${UPLOAD_URL}/api/uploadchunk`;
+        let response = await fetch(fetchUrl, fetchOptions);
+        let result = await response.json();
+        return result;
+      });
+      return postTasks;
+    }
+
+const b64toBlob = (b64Data: string, contentType = "", sliceSize = 512) => {
+  const byteCharacters = atob(b64Data);
+  const byteArrays = [];
+
+  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    const byteNumbers = new Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    byteArrays.push(byteArray);
+  }
+
+  const blob = new Blob(byteArrays, { type: contentType });
+  return blob;
+};
 
 /*
 
