@@ -123,8 +123,8 @@ function AddFile({ refetch, userID }: any) {
   }
 
   async function asMergeFile(hash:string, filename:string) {
-  console.log(hash)
-  console.log(filename)
+    console.log(hash)
+    console.log(filename)
         const formData = new FormData();
         formData.append("filehash", hash);
         formData.append("filename", filename);
